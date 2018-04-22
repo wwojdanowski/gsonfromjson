@@ -4,6 +4,7 @@ import static java.lang.System.out;
 
 import java.io.IOException;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -12,6 +13,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
+import com.voovoo.antlr.entities.ClassDef;
 import com.voovoo.antlr.entities.ClassGenerator;
 import com.voovoo.antlr.entities.EntityNode;
 import com.voovoo.antlr.entities.EntityType;
@@ -28,6 +30,14 @@ public class GsonGenerator extends JSONBaseListener {
 
 	public static void main(String[] args) throws IOException {
 
+		GsonGenerator generator = new GsonGenerator();
+		
+		generator.run();
+	}
+	
+	
+	private void run() throws IOException {
+
 		ClassLoader loader = GsonGenerator.class.getClassLoader();
 
 		CharStream stream = CharStreams.fromStream(loader.getResourceAsStream("sample.json"));
@@ -38,7 +48,6 @@ public class GsonGenerator extends JSONBaseListener {
 		parser.addParseListener(new GsonGenerator());
 
 		parser.json();
-
 	}
 
 	private ArrayDeque<EntityNode> nodes = new ArrayDeque<EntityNode>();
@@ -65,8 +74,13 @@ public class GsonGenerator extends JSONBaseListener {
 				
 				if (node.getType() == EntityType.OBJECT) {
 					try {
-						String s = generator.generateFromObject(node);
-						System.out.println(s);
+						
+						ArrayList<ClassDef> defs = generator.findClassDefinitions(node);
+						
+						for (ClassDef cdef : defs) {
+							System.out.println(cdef);
+						}
+						
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -106,7 +120,15 @@ public class GsonGenerator extends JSONBaseListener {
 	
 	@Override
 	public void exitJson(JsonContext ctx) {
-		prettyPrint(lastContainer, 0);
+		//prettyPrint(lastContainer, 0);
+		
+		
+		ClassGenerator generator = new ClassGenerator();
+		ArrayList<ClassDef> defs = generator.findClassDefinitions(lastContainer);
+		
+		for (ClassDef cdef : defs) {
+			System.out.println(cdef);
+		}
 	}
 
 	@Override

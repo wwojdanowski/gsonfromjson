@@ -40,6 +40,6 @@
   },
   "email": "wvalek3@vk.com",
   "gender": "Male",
-  "numbers" : [3, 4, 12],
+  "numbers" : [3, 4, 12, {"lat": 31, "lon": -39}],
   "ip_address": "67.76.188.26"
 }]
