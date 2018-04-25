@@ -1,0 +1,12 @@
+{
+  "id": 1,
+  "name": {
+  	"first_name": "Jeanette",
+  	"last_name": "Penddreth",
+  	"middle_name": "Dereck"
+  },
+  "numbers": [ 661231, 4234, 423, "Duck"],
+  "email": "jpenddreth0@census.gov",
+  "gender": "Female",
+  "ip_address": "26.58.193.2"
+}
