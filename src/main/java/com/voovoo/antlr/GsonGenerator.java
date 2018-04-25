@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 
+import gherkin.deps.com.google.gson.Gson;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -36,15 +37,22 @@ public class GsonGenerator extends JSONBaseListener {
 	}
 	
 
-	public void generateClasses(String jsonFilePath, String rootClassName, String packageName) throws IOException {
+	public ArrayList<ClassDef> generateClasses(String jsonFilePath,
+											   String rootClassName,
+											   String packageName) throws IOException {
+
+		GsonGenerator generator = new GsonGenerator();
+
 		CharStream stream = CharStreams.fromFileName(jsonFilePath);
 
 		JSONLexer lexer = new JSONLexer(stream);
 		JSONParser parser = new JSONParser(new CommonTokenStream(lexer));
 
-		parser.addParseListener(new GsonGenerator());
+		parser.addParseListener(generator);
 
 		parser.json();
+
+		return generator.classDefs;
 	}
 
 	private void run() throws IOException {
@@ -63,10 +71,13 @@ public class GsonGenerator extends JSONBaseListener {
 
 	private ArrayDeque<EntityNode> nodes = new ArrayDeque<EntityNode>();
 	private ArrayDeque<EntityNode> containers = new ArrayDeque<EntityNode>();
-	
-	EntityNode lastValue = null;
-	EntityNode lastContainer = null;
 
+
+	
+	private EntityNode lastValue = null;
+	private EntityNode lastContainer = null;
+
+	private ArrayList<ClassDef> classDefs = null;
 
 	private void prettyPrint(EntityNode root, int level) {
 		
@@ -85,13 +96,13 @@ public class GsonGenerator extends JSONBaseListener {
 				
 				if (node.getType() == EntityType.OBJECT) {
 					try {
-						
+
 						ArrayList<ClassDef> defs = generator.findClassDefinitions(node);
 						
 						for (ClassDef cdef : defs) {
 							System.out.println(cdef);
 						}
-						
+
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -136,10 +147,8 @@ public class GsonGenerator extends JSONBaseListener {
 		
 		ClassGenerator generator = new ClassGenerator();
 		ArrayList<ClassDef> defs = generator.findClassDefinitions(lastContainer);
-		
-		for (ClassDef cdef : defs) {
-			System.out.println(cdef);
-		}
+
+		classDefs = defs;
 	}
 
 	@Override
