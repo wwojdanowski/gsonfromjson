@@ -35,7 +35,18 @@ public class GsonGenerator extends JSONBaseListener {
 		generator.run();
 	}
 	
-	
+
+	public void generateClasses(String jsonFilePath, String rootClassName, String packageName) throws IOException {
+		CharStream stream = CharStreams.fromFileName(jsonFilePath);
+
+		JSONLexer lexer = new JSONLexer(stream);
+		JSONParser parser = new JSONParser(new CommonTokenStream(lexer));
+
+		parser.addParseListener(new GsonGenerator());
+
+		parser.json();
+	}
+
 	private void run() throws IOException {
 
 		ClassLoader loader = GsonGenerator.class.getClassLoader();
