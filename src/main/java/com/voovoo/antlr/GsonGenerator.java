@@ -1,19 +1,5 @@
 package com.voovoo.antlr;
 
-import static java.lang.System.out;
-
-import java.io.IOException;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-
-import gherkin.deps.com.google.gson.Gson;
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.tree.ErrorNode;
-import org.antlr.v4.runtime.tree.TerminalNode;
-
 import com.voovoo.antlr.entities.ClassDef;
 import com.voovoo.antlr.entities.ClassGenerator;
 import com.voovoo.antlr.entities.EntityNode;
@@ -21,11 +7,19 @@ import com.voovoo.antlr.entities.EntityType;
 import com.voovoo.antlr.json.JSONBaseListener;
 import com.voovoo.antlr.json.JSONLexer;
 import com.voovoo.antlr.json.JSONParser;
-import com.voovoo.antlr.json.JSONParser.ArrayContext;
-import com.voovoo.antlr.json.JSONParser.JsonContext;
-import com.voovoo.antlr.json.JSONParser.ObjContext;
-import com.voovoo.antlr.json.JSONParser.PairContext;
-import com.voovoo.antlr.json.JSONParser.ValueContext;
+import com.voovoo.antlr.json.JSONParser.*;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.tree.ErrorNode;
+import org.antlr.v4.runtime.tree.TerminalNode;
+
+import java.io.IOException;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+
+import static java.lang.System.out;
 
 public class GsonGenerator extends JSONBaseListener {
 
@@ -35,24 +29,28 @@ public class GsonGenerator extends JSONBaseListener {
 		
 		generator.run();
 	}
-	
+
+	private String rootClassName = null;
+	private String packageName = null;
 
 	public ArrayList<ClassDef> generateClasses(String jsonFilePath,
 											   String rootClassName,
 											   String packageName) throws IOException {
 
-		GsonGenerator generator = new GsonGenerator();
 
 		CharStream stream = CharStreams.fromFileName(jsonFilePath);
 
 		JSONLexer lexer = new JSONLexer(stream);
 		JSONParser parser = new JSONParser(new CommonTokenStream(lexer));
 
-		parser.addParseListener(generator);
+		parser.addParseListener(this);
+
+		this.rootClassName = rootClassName;
+		this.packageName = packageName;
 
 		parser.json();
 
-		return generator.classDefs;
+		return classDefs;
 	}
 
 	private void run() throws IOException {
@@ -64,7 +62,7 @@ public class GsonGenerator extends JSONBaseListener {
 		JSONLexer lexer = new JSONLexer(stream);
 		JSONParser parser = new JSONParser(new CommonTokenStream(lexer));
 
-		parser.addParseListener(new GsonGenerator());
+		parser.addParseListener(this);
 
 		parser.json();
 	}
@@ -142,10 +140,15 @@ public class GsonGenerator extends JSONBaseListener {
 	
 	@Override
 	public void exitJson(JsonContext ctx) {
-		//prettyPrint(lastContainer, 0);
-		
-		
+
+		if (rootClassName != null) {
+			lastContainer.setName(rootClassName);
+		}
+
 		ClassGenerator generator = new ClassGenerator();
+
+		generator.setPackage(this.packageName);
+
 		ArrayList<ClassDef> defs = generator.findClassDefinitions(lastContainer);
 
 		classDefs = defs;

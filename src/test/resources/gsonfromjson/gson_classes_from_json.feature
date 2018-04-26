@@ -5,7 +5,7 @@ Feature: A user wants to swiftly generate
 Scenario: As a lazy developer I want to create a set of POJO classes
 	with determined package name and root class name from a JSON file.
 
-	Given I have a "sample.json" json file
+	Given I have a "sample2.json" json file
 	And I want the root class to be called "MainClass"
 	And I expect that this class will be in "my.project" package
 	Then I generate POJO classess using the tool

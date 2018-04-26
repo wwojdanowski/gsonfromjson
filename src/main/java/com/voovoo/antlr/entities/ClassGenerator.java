@@ -64,7 +64,10 @@ public class ClassGenerator {
 		ClassDef def = new ClassDef();
 		
 		def.setName(entity.getName());
-		def.setPackageName(packageName);
+
+		if (packageName != null) {
+			def.setPackageName(packageName);
+		}
 		
 		for (EntityNode e : entity.getEntities()) {
 			

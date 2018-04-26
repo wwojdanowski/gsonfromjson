@@ -1,7 +1,6 @@
 package gsonfromjson
 
 import com.voovoo.antlr.GsonGenerator
-import cucumber.api.PendingException
 
 this.metaClass.mixin(cucumber.api.groovy.Hooks)
 this.metaClass.mixin(cucumber.api.groovy.EN)
@@ -63,14 +62,14 @@ Given(~/^I have a "([^"]*)" json file$/) { String json ->
 }
 And(~/^I want the root class to be called "([^"]*)"$/) { String rootClassName ->
 
-    rootClass =  rootClassName
+    rootClass = rootClassName
 
 }
 Then(~/^I generate POJO classess using the tool$/) { ->
 
     def tool = new GsonGenerator()
 
-    classes = tool.generateClasses(jsonPath, rootClass, "unknown")
+    classes = tool.generateClasses(jsonPath, rootClass, classPackage)
 
 }
 
