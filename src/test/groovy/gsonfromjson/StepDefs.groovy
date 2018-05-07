@@ -1,6 +1,7 @@
 package gsonfromjson
 
 import com.voovoo.antlr.GsonGenerator
+import com.voovoo.antlr.printing.ClassPrinter
 
 this.metaClass.mixin(cucumber.api.groovy.Hooks)
 this.metaClass.mixin(cucumber.api.groovy.EN)
@@ -95,4 +96,13 @@ And(~/^I expect that this class will be in "([^"]*)" package$/) { String expecte
 
 And(~/^This class is in expected package$/) { ->
     assert someClass.getPackageName() == classPackage, "${someClass.getName()} class is not in ${classPackage} package!"
+}
+
+Then(~/^I store this class as a java source file in appropriate package$/) { ->
+
+
+}
+
+Then(~/^The "([^"]*)" java source file was generated in "([^"]*)" directory$/) { String arg1, String arg2 ->
+    // Write code here that turns the phrase above into concrete actions
 }
