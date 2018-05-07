@@ -1,14 +1,22 @@
 package com.voovoo.antlr.entities;
 
-import static org.testng.Assert.assertTrue;
+
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 
-import org.testng.annotations.Test;
+import static org.testng.Assert.assertTrue;
 
 public class ClassGeneratorTest {
 
 	ClassGenerator generator = new ClassGenerator();
+
+	@DataProvider
+    public Object[][] entityProvider() {
+
+		return null;
+    }
 
 	@Test
 	public void findClassDefinitions() {
