@@ -11,10 +11,10 @@ public class ClassPrinter {
         StringBuilder output = new StringBuilder();
 
         if (def.hasValidPackageName()) {
-            output.append(def.getPackageName());
+            output.append(def.getPackageName() + "\n\n");
         }
 
-        output.append("\nclass " + def.getName() + " {");
+        output.append("class " + def.getName() + " {");
 
         HashMap<String, String> fields = def.getFields();
 
