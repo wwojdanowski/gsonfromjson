@@ -6,7 +6,8 @@ import java.util.HashMap;
 
 public class ClassPrinter {
 
-    public String print(ClassDef def) {
+    
+    public String print(ClassDef def) throws Exception {
 
         StringBuilder output = new StringBuilder();
 
@@ -14,19 +15,24 @@ public class ClassPrinter {
             output.append(def.getPackageName() + ";\n\n");
         }
 
-        output.append("class " + def.getName() + " {");
+        if (def.hasValidClassName()) {
+            output.append("class " + def.getName() + " {");
 
-        HashMap<String, String> fields = def.getFields();
+            HashMap<String, String> fields = def.getFields();
 
-        for (String name :
-                fields.keySet()) {
+            for (String name :
+                    fields.keySet()) {
 
-            String type = fields.get(name);
+                String type = fields.get(name);
 
-            output.append("\n\tprivate " + type + " " + name + ";");
+                output.append("\n\tprivate " + type + " " + name + ";");
+            }
+
+            output.append("\n}\n");
+
+        } else {
+            throw new Exception("Class definition is missing class name!");
         }
-
-        output.append("\n}\n");
 
         return output.toString();
 
