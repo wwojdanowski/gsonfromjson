@@ -1,19 +1,24 @@
 package com.voovoo.antlr;
 
 import com.voovoo.antlr.entities.ClassDef;
-import com.voovoo.antlr.entities.Printer;
 import com.voovoo.antlr.printing.ClassPrinter;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
+import java.util.List;
 
 public class DumpAction {
 
-    public void dump(ClassDef def, String outputDir) throws IOException {
+    /**
+     * @param def
+     * @param outputDir
+     * @throws Exception - if the class definition is missing name, general exception is thrown
+     * @throws IOException - if <b>outputDir</b> is missing, IOException is thrown
+     */
+
+    public void dump(ClassDef def, String outputDir) throws Exception {
 
         if (Files.isDirectory(Paths.get(outputDir))) {
 
@@ -40,8 +45,12 @@ public class DumpAction {
         }
     }
 
-    public void dump(ArrayList<ClassDef> definitions, String outputDir) {
-        
+
+    public void dump(List<ClassDef> definitions, String outputDir) throws Exception {
+
+        for (ClassDef classDef : definitions) {
+            dump(classDef, outputDir);
+        }
     }
 }
 

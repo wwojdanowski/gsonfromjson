@@ -9,6 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 import static org.testng.AssertJUnit.assertFalse;
 
 public class ClassPrinterTest {
@@ -29,7 +30,14 @@ public class ClassPrinterTest {
 
         Pattern p = Pattern.compile("[ \n]*class[ ]+Duck[ ]* \\{[ \n]*\\}[ \n]*");
 
-        String output = Optional.ofNullable(printer.print(classDef)).orElse("An empty string was returned!");
+        String output = null;
+
+        try {
+            output = Optional.ofNullable(printer.print(classDef)).orElse("An empty string was returned!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("Test failed!");
+        }
 
         Matcher m = p.matcher(output);
 
@@ -46,7 +54,13 @@ public class ClassPrinterTest {
                 "private Integer age;" +
                 "[ \n]*\\}[ \n]*");
 
-        String output = Optional.ofNullable(printer.print(classDef)).orElse("An empty string was returned!");
+        String output = null;
+        try {
+            output = Optional.ofNullable(printer.print(classDef)).orElse("An empty string was returned!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("Test failed!");
+        }
 
         Matcher m = p.matcher(output);
 
@@ -68,7 +82,13 @@ public class ClassPrinterTest {
 
         Pattern p = Pattern.compile(strPattern);
 
-        String output = Optional.ofNullable(printer.print(classDef)).orElse("An empty string was returned!");
+        String output = null;
+        try {
+            output = Optional.ofNullable(printer.print(classDef)).orElse("An empty string was returned!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("Test failed!");
+        }
 
         Matcher m = p.matcher(output);
 
@@ -92,7 +112,13 @@ public class ClassPrinterTest {
 
         Pattern p = Pattern.compile(strPattern);
 
-        String output = Optional.ofNullable(printer.print(classDef)).orElse("An empty string was returned!");
+        String output = null;
+        try {
+            output = Optional.ofNullable(printer.print(classDef)).orElse("An empty string was returned!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("Test failed!");
+        }
 
         Matcher m = p.matcher(output);
 
