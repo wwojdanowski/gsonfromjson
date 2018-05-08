@@ -84,7 +84,7 @@ public class ClassPrinterTest {
         classDef.addField("age", "Integer");
         classDef.addField("name", "String");
 
-        final String strPattern = "org.duck.world" +
+        final String strPattern = "org.duck.world;" +
                 "[ \n]*class[ ]+Duck[ ]* \\{" +
                 "[ \t\n]*private String name;[ \n]*" +
                 "[ \t\n]*private Integer age;[ \n]*" +
