@@ -11,7 +11,7 @@ public class ClassPrinter {
         StringBuilder output = new StringBuilder();
 
         if (def.hasValidPackageName()) {
-            output.append(def.getPackageName() + "\n\n");
+            output.append(def.getPackageName() + ";\n\n");
         }
 
         output.append("class " + def.getName() + " {");
@@ -26,7 +26,7 @@ public class ClassPrinter {
             output.append("\n\tprivate " + type + " " + name + ";");
         }
 
-        output.append("\n}");
+        output.append("\n}\n");
 
         return output.toString();
 
