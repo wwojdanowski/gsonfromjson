@@ -22,7 +22,7 @@ public class DumpAction {
 
         if (Files.isDirectory(Paths.get(outputDir))) {
 
-            final String packageName = def.getPackageName();
+            final String packageName = def.hasValidPackageName() ? def.getPackageName() : "";
             final String packagePath = outputDir + '/' + packageName.replace('.', '/');
 
             Files.createDirectories(

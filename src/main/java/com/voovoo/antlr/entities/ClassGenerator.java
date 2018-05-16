@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class ClassGenerator {
 
 	private Printer printer = new Printer();
-	private String packageName = "";
+	private String packageName = null;
 	
 	public void setPackage(String pn) {
 		packageName = pn;
