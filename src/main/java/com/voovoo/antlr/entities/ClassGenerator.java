@@ -1,6 +1,6 @@
 package com.voovoo.antlr.entities;
 
-import java.util.ArrayList;
+import java.util.*;
 
 public class ClassGenerator {
 
@@ -29,40 +29,78 @@ public class ClassGenerator {
 	 * @param entity this is assumed to be a json array
 	 */
 	private String processArray(EntityNode entity, ArrayList <ClassDef> definitions) {
-		
-		ArrayList <ClassDef> localDefs = new ArrayList<ClassDef>();
-		
-		for (EntityNode e : entity.getEntities()) {
-			localDefs = findClassDefinitions(e);
-		}
-		
-		if (localDefs.size() > 0) {
-			definitions.addAll(localDefs);
-			return localDefs.get(0).getName();
-		} else {
-			if (entity.getEntities().size() > 0) {
-				EntityType type = entity.getEntities().get(0).getType();
-				
-				switch (type) {
-				case NUMBER:
-					return "Integer";
-				case STRING:
-					return "String";
-				default:
-					return "Other";
-				
+
+		String className = "";
+
+		ArrayList <ClassDef> defsInThisBlock = new ArrayList<>();
+
+		if (entity.getEntities().size() > 0) {
+
+			for (EntityNode entityNode : entity.getEntities()) {
+
+				switch (entityNode.getType()) {
+
+					case STRING:
+						return "String";
+					case NUMBER:
+						return "Integer";
+					case OBJECT:
+
+						entityNode.setName(entity.getName());
+						ArrayList<ClassDef> localDefs = findClassDefinitions(entityNode);
+
+						defsInThisBlock.addAll(localDefs);
+						className = entityNode.getName();
+						break;
+
+					default:
+						return "";
 				}
-			} else {
-				return "Other";
 			}
+
+
+			if (defsInThisBlock.size() > 0) {
+
+				definitions.addAll(mergeDefinitionsByName(defsInThisBlock));
+			}
+		} else {
+
+			ClassDef classDef = new ClassDef();
+
+			className = entity.getName();
+
+			classDef.setName(className);
+			definitions.add(classDef);
 		}
-		
+
+		return className;
 	}
-	
+
+	private ArrayList<ClassDef> mergeDefinitionsByName(ArrayList <ClassDef> defs) {
+
+		HashMap <String, ClassDef> nameDefMapping = new HashMap<>();
+
+		defs.forEach(def -> {
+			ClassDef classDefMapping =
+					Optional.ofNullable(nameDefMapping.get(def.getName()))
+							.orElse(new ClassDef());
+
+			classDefMapping.setName(def.getName());
+			def.getFields().forEach(classDefMapping::addField);
+
+			nameDefMapping.put(def.getName(), classDefMapping);
+
+		});
+
+
+		return new ArrayList<>(nameDefMapping.values());
+
+	}
+
 	private void findClassDefinitionsInternal(EntityNode entity, ArrayList <ClassDef> definitions) {
 		
 		ClassDef def = new ClassDef();
-		
+
 		def.setName(entity.getName());
 
 		if (packageName != null) {
@@ -78,9 +116,9 @@ public class ClassGenerator {
 			case ARRAY:
 				
 				String outerMostType = processArray(e, definitions);
-				def.addField(name, outerMostType);
-				
+				def.addField(name, "[" + className(outerMostType) + "]");
 				break;
+
 			case FALSE:
 				break;
 			case NULL:
@@ -89,7 +127,7 @@ public class ClassGenerator {
 				def.addField(name, "Integer");
 				break;
 			case OBJECT:
-				def.addField(name, className(name));
+				def.addField(name, name != null ? className(name) : null);
 				findClassDefinitionsInternal(e, definitions);
 				break;
 			case STRING:
