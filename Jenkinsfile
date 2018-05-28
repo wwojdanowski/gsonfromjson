@@ -8,8 +8,8 @@ podTemplate(label: 'label2',containers: [
 ]) {
     node('label2') {
         stage('Checkout from SCM') {
-            git url: 'https://github.com/wwojdanowski/gsonfromjson.git',
-            branch: 'master'
+            /*git url: 'https://github.com/wwojdanowski/gsonfromjson.git',
+            branch: 'master'*/
 
             stash name: 'gsonfromjson-src'
         }
@@ -21,9 +21,9 @@ podTemplate(label: 'label2',containers: [
                             sh 'mvn clean test'
                         }
                     }
-                
+
                     stage('Collect unit tests results') {
-                        junit 'target/surefire-reports/TEST-*.xml'  
+                        junit 'target/surefire-reports/TEST-*.xml'
                     }
                 },
                 two: {
@@ -41,7 +41,7 @@ podTemplate(label: 'label2',containers: [
                         stage('Get stashed source code') {
                             unstash 'gsonfromjson-src'
                         }
-                    
+
                         stage('Collect checkstyle results') {
                             container('maven2') {
                             sh 'mvn clean checkstyle:checkstyle'
@@ -53,7 +53,7 @@ podTemplate(label: 'label2',containers: [
                               pattern: '**/target/checkstyle-result.xml',
                               unHealthy: '90',
                               useStableBuildAsReference: true
-                            ]) 
+                            ])
                         }
                     }
                 }
@@ -79,15 +79,15 @@ parallel (
                             git url: 'https://github.com/wwojdanowski/gsonfromjson.git',
                             branch: 'master'
                         }
-                
+
                         stage('Maven package') {
                             container('maven') {
                                 sh 'mvn clean test'
                             }
                         }
-                    
+
                         stage('Collect unit tests results') {
-                            junit 'target/surefire-reports/TEST-*.xml'  
+                            junit 'target/surefire-reports/TEST-*.xml'
                         }
                     }
                 }
@@ -108,7 +108,7 @@ parallel (
                         git url: 'https://github.com/wwojdanowski/gsonfromjson.git',
                         branch: 'master'
                     }
-                
+
                     stage('Collect checkstyle results') {
                         container('maven2') {
                         sh 'mvn clean checkstyle:checkstyle'
@@ -120,11 +120,9 @@ parallel (
                           pattern: '**/target/checkstyle-result.xml',
                           unHealthy: '90',
                           useStableBuildAsReference: true
-                        ]) 
+                        ])
                     }
                 }
             }
         }
     )
-
-
